@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+
+<div class="row h-100 justify-content-center align-items-center" id="load_spinner">
+    <div class="col col-12 align-items-center text-center">
+        <div class="spinner-border text-primary" role="status">
+        </div>
+    </div>
+</div>
+<div id="content" class="mt-5">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Apelido</th>
+                    <th>Documento</th>
+                    <th>Data Criação/Nascimento</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <td>{{client.id}}</td>
+                    <td>{{client.name}}</td>
+                    <td>{{client.fantasy_name}}</td>
+                    <td>{{client.fiscal_code}}</td>
+                    <td>{{client.born_date}}</td>
+                    <td>Three actions</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    window.onload = async () => {
+        $('#content').hide()
+        $('#content').show()
+        $('#load_spinner').hide()
+    }
+</script>
+
+{% endblock %}

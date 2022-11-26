@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-vkk$0p5^^y-xhhpk7ns765y3jnozosw!^e9h6f*($dfs5gcp1b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'authentication',
     'locations',
-    'bootstrapform'
+    'bootstrapform',
+    'dashboard',
+    'clients'
 ]
 
 MIDDLEWARE = [
@@ -86,7 +88,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -131,3 +132,12 @@ STATICFILES_DIRS = [
     os_path.join(BASE_DIR, 'prova', 'static'),
 ]
 STATIC_ROOT = os_path.join(BASE_DIR, 'public')
+
+AUTH_USER_MODEL = 'authentication.User'
+
+AUTHENTICATION_BACKENDS = [
+    'authentication.backend.email_login_backend.EmailLoginBackend'
+]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os_path.join(BASE_DIR, 'media')

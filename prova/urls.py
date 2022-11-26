@@ -4,13 +4,10 @@ from django.conf import settings
 from django.views.static import serve
 
 
-print(settings.STATIC_URL, settings.STATIC_ROOT)
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('authentication.urls')),
     path('locations/', include('locations.urls')),
+    path('dashboard/', include('dashboard.urls')),
+    path('dashboard/clients/', include('clients.urls'))
 ]
-
-
-print(urlpatterns)

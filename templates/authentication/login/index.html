@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block content %}
+
+<div class="row h-100 justify-content-center align-items-center">
+    <div class=" col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6 ">
+        <form method="post" class="card p-2" >
+            <h1>Login</h1>
+            {% csrf_token %}
+            {{ form | bootstrap }}
+
+            {% if errors %}
+                {% for error in errors %}
+                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+
+             <div class="row justify-content-center align-items-center">
+                <div class="col col-6 text-center">
+                    <hr />
+                </div>
+            </div>
+
+            <div class="row justify-content-center align-items-center">
+                <div class="col col-12 text-center">
+                    <button type="submit" class="btn btn-success w-100" >Send</button>
+                </div>
+
+                <div class="col col-12 text-center mt-2">
+                    <a href="{% url 'register' %}" >Não tem uma conta? Cadastrar-se agora.</a>
+                </div>
+
+                <div class="col col-12 text-center mt-2">
+                    <a href="{% url 'forgot_password' %}" >Esqueci minha senha.</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

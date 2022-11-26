@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="row h-100 justify-content-center align-items-center" id="load_spinner">
+    <div class="col col-12 align-items-center text-center">
+        <div class="spinner-border text-primary" role="status">
+        </div>
+    </div>
+</div>
+
+<div class="mt-5">
+    {% if form.errors %}
+    <div class="row">
+        <span class="alert alert-danger">Ocorreu um erro ao salvar</span>
+    </div>
+    {% endif %}
+    <form method="post" action="{% url 'save_client' %}" onchange="resetIsPreFetch()" id="client_form"
+        enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group mb-2" onchange="handleMaskOnStateRegistration()">
+            <select name="client_type" id="client_type" class="form-control">
+                <option value="pj" selected>Pessoa Juridica</option>
+                <option value="pf">Pessoa Fisica</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="fiscal_code" id="fical_code_label">Código Fiscal / CPF</label>
+            <input type="text" required name="fiscal_code" id="fiscal_code" class="form-control">
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="state_registration">Inscrição Estadual</label>
+            <input type="text" required name="state_registration" id="state_registration" class="form-control"
+                maxlength="15">
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="name">Nome</label>
+            <input type="text" required name="name" id="name" class="form-control">
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="fantasy_name" id="fantasy_name_label">Nome Fantasia</label>
+            <input type="text" required name="fantasy_name" id="fantasy_name" class="form-control">
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="states">Estados</label>
+            <select name="states" id="states" onchange="loadStateCities()" class="form-control">
+                <option value="" disabled selected>Selecione uma opção</option>
+            </select>
+        </div>
+        <div class="form-group mb-2">
+            <label for="city">Cidades</label>
+            <select name="city" id="city" disabled class="form-control" required>
+                <option value="" disabled selected>Selecione uma opção</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="address">Endereço</label>
+            <input type="text" required name="address" id="address" class="form-control">
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="neighborhood">Bairro</label>
+            <input type="text" required name="neighborhood" id="neighborhood" class="form-control">
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="street_number">Número</label>
+            <input type="number" name="street_number" id="street_number" class="form-control" min="0" step="1">
+            <small id="street_number" class="form-text text-muted">
+                Deixe vazio caso seu endereço não tenha número
+            </small>
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="born_date" id="born_date_label">Data de Nascimento / Abertura</label>
+            <input type="date" required name="born_date" id="born_date" class="form-control">
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="image_path" id="image_label">Logo / Foto</label>
+            <input type="file" name="image_path" id="image_path" class="form-control" accept="image/*" required>
+            <small id="street_number" class="form-text text-muted">
+                Apenas imagens
+            </small>
+        </div>
+
+        <div class="form-group mb-2">
+            <button type="submit" class="btn btn-large btn-success">Salvar</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    var mask = null
+    var isPreFetch = true;
+
+    window.onload = async () => {
+        $('#client_form').hide()
+        await loadStates()
+        handleMaskOnStateRegistration()
+        $('#client_form').show()
+        $('#load_spinner').hide()
+    }
+
+    function clientTypeLabels() {
+        const clientTypeElement = document.getElementById('client_type')
+        const isPessoaFisica = clientTypeElement.value === 'pf'
+
+        const fiscalCodeLabel = document.getElementById('fical_code_label')
+        const bornDateLabel = document.getElementById('born_date_label')
+        const imageLabel = document.getElementById('image_label')
+        const fantasynameLabel = document.getElementById('fantasy_name_label')
+
+        fiscalCodeLabel.innerHTML = isPessoaFisica ? 'CPF' : 'CNPJ'
+        bornDateLabel.innerHTML = isPessoaFisica ? 'Data de nascimento' : 'Data de abertura'
+        imageLabel.innerHTML = isPessoaFisica ? 'Foto de identificação' : 'Logo'
+        fantasynameLabel.innerHTML = isPessoaFisica ? 'Apelido' : 'Nome fantasia'
+    }
+
+    function handleMaskOnStateRegistration() {
+        const clientTypeElement = document.getElementById('client_type')
+        const fiscalCodeElement = document.getElementById('fiscal_code')
+        fiscalCodeElement.value = ''
+        const fieldMask = clientTypeElement.value === 'pf' ? '000.000.000-00' : '00.000.000/0000-00'
+        if (mask)
+            mask.destroy()
+        mask = IMask(fiscalCodeElement, { mask: fieldMask })
+        clientTypeLabels()
+    }
+
+    function resetIsPreFetch() {
+        isPreFetch = false
+    }
+
+    function resetSelect(id) {
+        const selectElement = document.getElementById(id)
+        if (!selectElement)
+            return;
+        while (selectElement.children.length > 1) {
+            selectElement.remove(1)
+        }
+    }
+
+    async function loadStates() {
+        const statesSelectElement = document.getElementById('states')
+        const { data: response } = await axios.get('/locations/states')
+        const states = response.data.map(item => ({ value: item.id, label: `${item.name} - ${item.code}` }))
+        populateSelect("states", states)
+    }
+
+    async function loadState(stateId) {
+        const { data: response, status } = await axios.get(`/locations/states/${stateId}`)
+        if (!response || status !== 200)
+            throw new Error('failed to fetch state')
+        return response.data
+    }
+
+    async function loadStateCities() {
+        const stateId = document.getElementById('states').value
+        resetSelect("city")
+        const { cities } = await loadState(stateId)
+        const values = cities.map(city => ({ value: city.id, label: city.name }))
+        const select = populateSelect("city", values)
+        select.removeAttribute("disabled")
+    }
+
+    function populateSelect(selectId, values) {
+        // console.log("aq?", { isPreFetch }) # TODO: verificar o prefetch para edição
+        const selectElement = document.getElementById(selectId)
+        if (!isPreFetch)
+            selectElement.value = ""
+        if (!selectElement)
+            throw new Error('Invalid Select Element')
+        values.forEach((value) => {
+            const option = new Option(`${value.label}`, value.value, false, value?.selected)
+            selectElement.append(option)
+        })
+        return selectElement
+    }
+</script>
+
+{% endblock %}
