@@ -1,1 +1,0 @@
-uvicorn prova.wsgi:application
