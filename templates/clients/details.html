@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+
+<div class="row h-100 justify-content-center align-items-center" id="load_spinner">
+    <div class="col col-12 align-items-center text-center">
+        <div class="spinner-border text-primary" role="status">
+        </div>
+    </div>
+</div>
+<div id="content" class="mt-5">
+    <div class="row mb-2">
+        <div class="col">
+            <a class="btn btn-primary" href="{% url 'all_client' %}">
+                <i class="bi bi-arrow-90deg-left"></i>
+                Voltar
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-sm-12 col-xs-12 align-items-center text-center">
+            <img src="{{ client.image_path.url }}" data-toggle="modal" data-target="#exampleModalCenter"
+                style="max-width: 200px">
+        </div>
+        <div class="col col-sm-12 col-xs-12">
+
+            <div class="form-group mb-2">
+                <label for="">#</label>
+                <input type="text" class="form-control" disabled="disabled" value="#{{client.id}}">
+            </div>
+            <div class="form-group mb-2">
+                <label for="">Nome</label>
+                <input type="text" value={{client.name}} class="form-control" disabled="disabled">
+            </div>
+            <div class="form-group mb-2">
+                <label for="">Apelido/Nome Fantasia</label>
+                <input type="text" value={{client.fantasy_name}} class="form-control" disabled="disabled">
+            </div>
+            <div class="form-group mb-2">
+                <label for="">Inscrição estatudal</label>
+                <input type="text" value={{client.state_registration}} class="form-control" disabled="disabled">
+            </div>
+            <div class="form-group mb-2">
+                <label for="">
+                    Código Fiscal (CPF/CNPJ)
+                </label>
+                <input type="text" value={{client.fiscal_code}} class="form-control" disabled="disabled">
+            </div>
+            <div class="form-group mb-2">
+                <label for="">
+                    Endereco
+                </label>
+                <input type="text"
+                    value="{{client.address}} {{client.street_number}}. {{client.neiborhood}} - {{client.city.name}}, {{client.city.state.name}} "
+                    class="form-control" disabled="disabled">
+            </div>
+            <div class="form-group mb-2">
+                <label for="">
+                    Data de Nascimento / Abertura
+                </label>
+                <input type="date" value={{client.born_date | date:'Y-m-d' }} class="form-control" disabled="disabled">
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Iamge Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="text-center justify-content-center">
+                <img src="{{ client.image_path.url }}" style="max-width: calc(100vw - 10%)">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = async () => {
+        $('#content').hide()
+        $('#content').show()
+        $('#load_spinner').hide()
+    }
+</script>
+
+{% endblock %}
