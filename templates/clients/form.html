@@ -23,11 +23,17 @@
         <span class="alert alert-danger">Ocorreu um erro ao salvar</span>
     </div>
     {% endif %}
+    {% if client %}
+    <form method="post" action="{% url 'update_client' client_id=client.id %}" onchange="resetIsPreFetch()" id="client_form"
+        enctype="multipart/form-data">
+
+    {% else %}
     <form method="post" action="{% url 'save_client' %}" onchange="resetIsPreFetch()" id="client_form"
         enctype="multipart/form-data">
+    {% endif %}
         {% csrf_token %}
         <div class="form-group mb-2" onchange="handleMaskOnStateRegistration()">
-            <select name="client_type" id="client_type" class="form-control">
+            <select name="client_type" id="client_type" class="form-control" >
                 <option value="pj" selected>Pessoa Juridica</option>
                 <option value="pf">Pessoa Fisica</option>
             </select>
@@ -35,23 +41,25 @@
 
         <div class="form-group mb-2">
             <label for="fiscal_code" id="fical_code_label">Código Fiscal / CPF</label>
-            <input type="text" required name="fiscal_code" id="fiscal_code" class="form-control">
+            <input type="text" required name="fiscal_code" id="fiscal_code" class="form-control"
+                value={{client.fiscal_code}}>
         </div>
 
         <div class="form-group mb-2">
             <label for="state_registration">Inscrição Estadual</label>
             <input type="text" required name="state_registration" id="state_registration" class="form-control"
-                maxlength="15">
+                maxlength="15" value={{client.state_registration}}>
         </div>
 
         <div class="form-group mb-2">
             <label for="name">Nome</label>
-            <input type="text" required name="name" id="name" class="form-control">
+            <input type="text" required name="name" id="name" class="form-control" value="{{client.name}}">
         </div>
 
         <div class="form-group mb-2">
             <label for="fantasy_name" id="fantasy_name_label">Nome Fantasia</label>
-            <input type="text" required name="fantasy_name" id="fantasy_name" class="form-control">
+            <input type="text" required name="fantasy_name" id="fantasy_name" class="form-control"
+                value="{{client.fantasy_name}}">
         </div>
 
         <div class="form-group mb-2">
@@ -69,17 +77,19 @@
 
         <div class="form-group mb-2">
             <label for="address">Endereço</label>
-            <input type="text" required name="address" id="address" class="form-control">
+            <input type="text" required name="address" id="address" class="form-control" value="{{client.address}}">
         </div>
 
         <div class="form-group mb-2">
             <label for="neighborhood">Bairro</label>
-            <input type="text" required name="neighborhood" id="neighborhood" class="form-control">
+            <input type="text" required name="neighborhood" id="neighborhood" class="form-control"
+                value="{{client.neighborhood}}">
         </div>
 
         <div class="form-group mb-2">
             <label for="street_number">Número</label>
-            <input type="number" name="street_number" id="street_number" class="form-control" min="0" step="1">
+            <input type="number" name="street_number" id="street_number" class="form-control" min="0" step="1"
+                value="{{client.street_number}}">
             <small id="street_number" class="form-text text-muted">
                 Deixe vazio caso seu endereço não tenha número
             </small>
@@ -87,9 +97,11 @@
 
         <div class="form-group mb-2">
             <label for="born_date" id="born_date_label">Data de Nascimento / Abertura</label>
-            <input type="date" required name="born_date" id="born_date" class="form-control">
+            <input type="date" required name="born_date" id="born_date" value="{{client.born_date |date:'Y-m-d' }}" class="form-control" >
         </div>
 
+
+        {% if not client %}
         <div class="form-group mb-2">
             <label for="image_path" id="image_label">Logo / Foto</label>
             <input type="file" name="image_path" id="image_path" class="form-control" accept="image/*" required>
@@ -98,7 +110,10 @@
             </small>
         </div>
 
+        {% endif %}
+
         <div class="form-group mb-2">
+            <a href={% url 'all_client' %} class="btn btn-large btn-danger">Cancelar</a>
             <button type="submit" class="btn btn-large btn-success">Salvar</button>
         </div>
     </form>
@@ -106,14 +121,39 @@
 
 <script>
     var mask = null
+    {% if client %}
     var isPreFetch = true;
+    {% else %}
+    var isPreFetch = false;
+    {% endif %}
+
+    console.log({ isPreFetch })
 
     window.onload = async () => {
         $('#client_form').hide()
+        handleUpdateClientTypeWhenPreFetch()
         await loadStates()
+        handleClientCityWhenPreFetch()
         handleMaskOnStateRegistration()
         $('#client_form').show()
         $('#load_spinner').hide()
+    }
+
+    function handleUpdateClientTypeWhenPreFetch() {
+        if(!isPreFetch)
+            return ;
+        const clientTypeElement = document.getElementById('client_type')
+        clientTypeElement.value = "{{client.client_type}}"
+    }
+
+    async function handleClientCityWhenPreFetch() {
+        const stateId = "{{client.city.state.id}}"
+        const cityId = "{{client.city.id}}"
+        const statesSelectElement = document.getElementById('states')
+        const citiesSelectElement = document.getElementById('city')
+        statesSelectElement.value = stateId
+        await loadStateCities(stateId)
+        citiesSelectElement.value = cityId
     }
 
     function clientTypeLabels() {
@@ -125,16 +165,21 @@
         const imageLabel = document.getElementById('image_label')
         const fantasynameLabel = document.getElementById('fantasy_name_label')
 
-        fiscalCodeLabel.innerHTML = isPessoaFisica ? 'CPF' : 'CNPJ'
-        bornDateLabel.innerHTML = isPessoaFisica ? 'Data de nascimento' : 'Data de abertura'
-        imageLabel.innerHTML = isPessoaFisica ? 'Foto de identificação' : 'Logo'
-        fantasynameLabel.innerHTML = isPessoaFisica ? 'Apelido' : 'Nome fantasia'
+        if (fiscalCodeLabel)
+            fiscalCodeLabel.innerHTML = isPessoaFisica ? 'CPF' : 'CNPJ'
+        if (bornDateLabel)
+            bornDateLabel.innerHTML = isPessoaFisica ? 'Data de nascimento' : 'Data de abertura'
+        if (imageLabel)
+            imageLabel.innerHTML = isPessoaFisica ? 'Foto de identificação' : 'Logo'
+        if (fantasynameLabel)
+            fantasynameLabel.innerHTML = isPessoaFisica ? 'Apelido' : 'Nome fantasia'
     }
 
     function handleMaskOnStateRegistration() {
         const clientTypeElement = document.getElementById('client_type')
         const fiscalCodeElement = document.getElementById('fiscal_code')
-        fiscalCodeElement.value = ''
+        if (!isPreFetch)
+            fiscalCodeElement.value = ''
         const fieldMask = clientTypeElement.value === 'pf' ? '000.000.000-00' : '00.000.000/0000-00'
         if (mask)
             mask.destroy()
