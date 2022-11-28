@@ -92,11 +92,11 @@ WSGI_APPLICATION = 'prova.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASS', ''),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT', 3306),
+        'NAME': '9f740909$default',
+        'USER': '9f740909',
+        'PASSWORD': 'djangoprova',
+        'HOST': '9f740909.mysql.pythonanywhere-services.com',
+        'PORT': 3306,
     }
 }
 
