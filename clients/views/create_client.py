@@ -17,7 +17,6 @@ class CreateClientView:
         form = create_client.CreateClientForm(request.POST, request.FILES)
         form.full_clean()
         if not form.is_valid():
-            print(form.errors)
             return render(request, 'clients/form.html', {"form": form, })
         form.save()
         return redirect('all_client')
