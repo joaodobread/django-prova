@@ -12,7 +12,8 @@ class RegisterForm(forms.ModelForm):
     first_name = forms.CharField(max_length=150, label='Nome')
     last_name = forms.CharField(max_length=150, label='Sobrenome', )
     secret_key_shown = forms.CharField(label='Chave de Recuperação de senha', disabled=True,
-                                       help_text='Salve em um lugar seguro, pois esse campo só é exibido agora. Depois do cadastro nunca mais será exibido.', )
+                                       widget=forms.TextInput,
+                                       help_text='Salve em um lugar seguro, pois esse campo só é exibido agora. Depois do cadastro nunca mais será exibido.', required=False)
     reset_password_key = forms.CharField(widget=forms.HiddenInput)
 
     class Meta:

@@ -19,6 +19,7 @@ class RegisterView:
         form = register.RegisterForm(request.POST, )
         form.full_clean()
         if not form.is_valid():
+            print(form.errors)
             return render(request, 'authentication/register/index.html',
                           {"form": form, "errors": form.errors})
 
