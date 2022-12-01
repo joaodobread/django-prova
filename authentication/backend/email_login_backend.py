@@ -9,6 +9,8 @@ class EmailLoginBackend(BaseBackend):
         """
         try:
             user = User.objects.get(email=email)
+            if not user:
+                return None
             if user.check_password(password):
                 return user
             return None
