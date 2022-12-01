@@ -2,7 +2,7 @@ from django.urls import path
 
 
 from clients.views import (create_client, list_client,
-                           delete_client, edit_client)
+                           delete_client, edit_client, export_data)
 
 
 urlpatterns = [
@@ -15,5 +15,7 @@ urlpatterns = [
          list_client.ListClientView.detail, name='detail_client'),
     path('edit/<int:client_id>', edit_client.EditClientView.edit, name='edit_client'),
     path('update/<int:client_id>',
-         edit_client.EditClientView.update, name='update_client')
+         edit_client.EditClientView.update, name='update_client'),
+    path('export',
+         export_data.export, name='export_data')
 ]

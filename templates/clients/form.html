@@ -24,100 +24,105 @@
     </div>
     {% endif %}
     {% if client %}
-    <form method="post" action="{% url 'update_client' client_id=client.id %}" onchange="resetIsPreFetch()" id="client_form"
-        enctype="multipart/form-data">
+    <form method="post" action="{% url 'update_client' client_id=client.id %}" onchange="resetIsPreFetch()"
+        id="client_form" enctype="multipart/form-data">
 
-    {% else %}
-    <form method="post" action="{% url 'save_client' %}" onchange="resetIsPreFetch()" id="client_form"
-        enctype="multipart/form-data">
-    {% endif %}
-        {% csrf_token %}
-        <div class="form-group mb-2" onchange="handleMaskOnStateRegistration()">
-            <select name="client_type" id="client_type" class="form-control" >
-                <option value="pj" selected>Pessoa Juridica</option>
-                <option value="pf">Pessoa Fisica</option>
-            </select>
-        </div>
+        {% else %}
+        <form method="post" action="{% url 'save_client' %}" onchange="resetIsPreFetch()" id="client_form"
+            enctype="multipart/form-data">
+            {% endif %}
+            {% csrf_token %}
+            <div class="form-group mb-2" onchange="handleMaskOnStateRegistration()">
+                <select name="client_type" id="client_type" class="form-control">
+                    <option value="pj" selected>Pessoa Juridica</option>
+                    <option value="pf">Pessoa Fisica</option>
+                </select>
+            </div>
 
-        <div class="form-group mb-2">
-            <label for="fiscal_code" id="fical_code_label">Código Fiscal / CPF</label>
-            <input type="text" required name="fiscal_code" id="fiscal_code" class="form-control"
-                value={{client.fiscal_code}}>
-        </div>
+            <div class="form-group mb-2">
+                <label for="fiscal_code" id="fical_code_label">Código Fiscal / CPF</label>
+                <input type="text" required name="fiscal_code" id="fiscal_code" class="form-control"
+                    value={{client.fiscal_code}}>
+            </div>
 
-        <div class="form-group mb-2">
-            <label for="state_registration">Inscrição Estadual</label>
-            <input type="text" required name="state_registration" id="state_registration" class="form-control"
-                maxlength="15" value={{client.state_registration}}>
-        </div>
+            <div class="form-group mb-2">
+                <label for="state_registration">Inscrição Estadual</label>
+                <input type="text" required name="state_registration" id="state_registration" class="form-control"
+                    maxlength="15" value={{client.state_registration}}>
+            </div>
 
-        <div class="form-group mb-2">
-            <label for="name">Nome</label>
-            <input type="text" required name="name" id="name" class="form-control" value="{{client.name}}">
-        </div>
+            <div class="form-group mb-2">
+                <label for="name">Nome</label>
+                <input type="text" required name="name" id="name" class="form-control" value="{{client.name}}">
+            </div>
 
-        <div class="form-group mb-2">
-            <label for="fantasy_name" id="fantasy_name_label">Nome Fantasia</label>
-            <input type="text" required name="fantasy_name" id="fantasy_name" class="form-control"
-                value="{{client.fantasy_name}}">
-        </div>
+            <div class="form-group mb-2">
+                <label for="fantasy_name" id="fantasy_name_label">Nome Fantasia</label>
+                <input type="text" required name="fantasy_name" id="fantasy_name" class="form-control"
+                    value="{{client.fantasy_name}}">
+            </div>
 
-        <div class="form-group mb-2">
-            <label for="states">Estados</label>
-            <select name="states" id="states" onchange="loadStateCities()" class="form-control">
-                <option value="" disabled selected>Selecione uma opção</option>
-            </select>
-        </div>
-        <div class="form-group mb-2">
-            <label for="city">Cidades</label>
-            <select name="city" id="city" disabled class="form-control" required>
-                <option value="" disabled selected>Selecione uma opção</option>
-            </select>
-        </div>
+            <div class="form-group mb-2">
+                <label for="states">Estados</label>
+                <select name="states" id="states" onchange="loadStateCities()" class="form-control">
+                    <option value="" disabled selected>Selecione uma opção</option>
+                </select>
+            </div>
+            <div class="form-group mb-2">
+                <label for="city">Cidades</label>
+                <select name="city" id="city" disabled class="form-control" required>
+                    <option value="" disabled selected>Selecione uma opção</option>
+                </select>
+            </div>
 
-        <div class="form-group mb-2">
-            <label for="address">Endereço</label>
-            <input type="text" required name="address" id="address" class="form-control" value="{{client.address}}">
-        </div>
+            <div class="form-group mb-2">
+                <label for="address">Endereço</label>
+                <input type="text" required name="address" id="address" class="form-control" value="{{client.address}}">
+            </div>
 
-        <div class="form-group mb-2">
-            <label for="neighborhood">Bairro</label>
-            <input type="text" required name="neighborhood" id="neighborhood" class="form-control"
-                value="{{client.neighborhood}}">
-        </div>
+            <div class="form-group mb-2">
+                <label for="neighborhood">Bairro</label>
+                <input type="text" required name="neighborhood" id="neighborhood" class="form-control"
+                    value="{{client.neighborhood}}">
+            </div>
 
-        <div class="form-group mb-2">
-            <label for="street_number">Número</label>
-            <input type="number" name="street_number" id="street_number" class="form-control" min="0" step="1"
-                value="{{client.street_number}}">
-            <small id="street_number" class="form-text text-muted">
-                Deixe vazio caso seu endereço não tenha número
-            </small>
-        </div>
+            <div class="form-group mb-2">
+                <label for="street_number">Número</label>
+                <input type="number" name="street_number" id="street_number" class="form-control" min="0" step="1"
+                    value="{{client.street_number}}">
+                <small id="street_number" class="form-text text-muted">
+                    Deixe vazio caso seu endereço não tenha número
+                </small>
+            </div>
 
-        <div class="form-group mb-2">
-            <label for="born_date" id="born_date_label">Data de Nascimento / Abertura</label>
-            <input type="date" required name="born_date" id="born_date" value="{{client.born_date |date:'Y-m-d' }}" class="form-control" >
-        </div>
+            <div class="form-group mb-2">
+                <label for="born_date" id="born_date_label">Data de Nascimento / Abertura</label>
+                <input type="date" required name="born_date" id="born_date" value="{{client.born_date |date:'Y-m-d' }}"
+                    class="form-control">
+            </div>
 
 
-        {% if not client %}
-        <div class="form-group mb-2">
-            <label for="image_path" id="image_label">Logo / Foto</label>
-            <input type="file" name="image_path" id="image_path" class="form-control" accept="image/*" required>
-            <small id="street_number" class="form-text text-muted">
-                Apenas imagens
-            </small>
-        </div>
+            {% if not client %}
+            <div class="form-group mb-2">
+                <label for="image_path" id="image_label">Logo / Foto</label>
+                <input type="file" name="image_path" id="image_path" class="form-control" accept="image/*" required>
+                <small id="street_number" class="form-text text-muted">
+                    Apenas imagens
+                </small>
+            </div>
 
-        {% endif %}
+            {% endif %}
 
-        <div class="form-group mb-2">
-            <a href={% url 'all_client' %} class="btn btn-large btn-danger">Cancelar</a>
-            <button type="submit" class="btn btn-large btn-success">Salvar</button>
-        </div>
-    </form>
+            <div class="form-group mb-2">
+                <a href={% url 'all_client' %} class="btn btn-large btn-danger">Cancelar</a>
+                <button type="submit" class="btn btn-large btn-success">Salvar</button>
+                <button type="button" class="btn btn-large btn-success" onclick="exportData('client_form')">Exportar
+                    dados</button>
+            </div>
+        </form>
 </div>
+
+
 
 <script>
     var mask = null
@@ -140,8 +145,8 @@
     }
 
     function handleUpdateClientTypeWhenPreFetch() {
-        if(!isPreFetch)
-            return ;
+        if (!isPreFetch)
+            return;
         const clientTypeElement = document.getElementById('client_type')
         clientTypeElement.value = "{{client.client_type}}"
     }
@@ -235,6 +240,18 @@
             selectElement.append(option)
         })
         return selectElement
+    }
+
+    function exportData(formId) {
+        const form = document.getElementById(formId);
+        if (form && !form.checkValidity())
+            return alert(
+                "Valores inválidos, preencha corretamente o formulário para exportar."
+            );
+        const prevAction = form.action;
+        form.action = "{% url 'export_data' %}";
+        form.submit();
+        form.action = prevAction;
     }
 </script>
 
