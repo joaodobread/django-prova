@@ -8,5 +8,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, error_messages={
                               'unique': 'Email já existe.'})
     username = models.CharField(max_length=150, null=True)
+    reset_password_question = models.CharField(
+        max_length=5, null=False, blank=False)
     reset_password_key = models.CharField(
         'user_reset_password_key', 'reset_password_key', max_length=254)

@@ -3,7 +3,17 @@ import hashlib
 
 
 class ForgotPasswordForm(forms.Form):
-    reset_password_key = forms.CharField(max_length=254, label='Chave Secreta')
+    email = forms.CharField(widget=forms.EmailInput(),
+                            max_length=254, label='Email')
+    reset_password_key = forms.CharField(label='Resposta de segurança', disabled=False,
+                                         widget=forms.TextInput,
+                                         help_text='Resposta informada durante o cadastro do usuário.', required=True)
+
+    error_count = forms.CharField(
+        widget=forms.HiddenInput,
+        initial=0
+    )
+
     new_password = forms.CharField(
         max_length=128, widget=forms.PasswordInput(), label='Nova senha')
 

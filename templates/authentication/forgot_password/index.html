@@ -8,6 +8,11 @@
         <form method="post" class="card p-2" >
             <h1>Esqueci a senha</h1>
             {% csrf_token %}
+
+            {% if hint  %}
+                <div class="alert alert-primary mt-3">Dica: <b>{{ hint }}</b></div>
+            {% endif %}
+
             {{ form | bootstrap }}
 
             {% if errors %}
